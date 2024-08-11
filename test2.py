@@ -75,7 +75,12 @@ def track_shipment(shipment_name):
     st.write(f"Order Date: {datetime.now().strftime('%Y-%m-%d')}")
     st.write(f"Shipping Status: {'Shipped' if datetime.now() > shipment['shipping_date'] else 'Pending'}")
     st.write(f"Current Location: {city}")
-    st.progress((datetime.now() - (shipment['shipping_date'] - timedelta(days=5))).days / 5 * 100)
+    
+    # Calculate progress as percentage of shipping duration
+    days_since_shipping = (datetime.now() - shipment['shipping_date']).days
+    shipping_duration = (shipment['delivery_date'] - shipment['shipping_date']).days
+    progress = min(max(days_since_shipping / shipping_duration * 100, 0), 100)  # Clamp between 0 and 100
+    st.progress(progress)
 
 # Manage inventory page
 def manage_inventory(shipment_name):
@@ -91,7 +96,13 @@ def manage_inventory(shipment_name):
 # Update inventory page
 def update_inventory(shipment_name, quantity_to_order):
     st.title("Inventory Updated")
-    st.write(f"Inventory updated: {quantity_to_order} units of {shipment_name} processed successfully!")
+    shipment = shipments[shipment_name]
+    
+    if quantity_to_order > shipment['quantity']:
+        st.error("Order quantity exceeds available inventory!")
+    else:
+        shipment['quantity'] -= quantity_to_order
+        st.write(f"Inventory updated: {quantity_to_order} units of {shipment_name} processed successfully!")
 
 # Check delivery status page
 def check_delivery_status(shipment_name):
