@@ -9,7 +9,7 @@ products = {
     'Product C': {'quantity': 100, 'shipping_date': datetime.now() + timedelta(days=7), 'expiry_date': datetime.now() + timedelta(days=45)},
 }
 
-# Mock user data (can be extended for more users)
+# Mock user data
 users = {
     'user1': {'password': 'pass1'},
     'user2': {'password': 'pass2'}
