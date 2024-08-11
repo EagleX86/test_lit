@@ -9,8 +9,11 @@ products = {
     'Product C': {'quantity': 100, 'shipping_date': datetime.now() + timedelta(days=7), 'expiry_date': datetime.now() + timedelta(days=45)},
 }
 
-# Mock user data
-user_data = {'username': 'user', 'password': 'pass'}
+# Mock user data (can be extended for more users)
+users = {
+    'user1': {'password': 'pass1'},
+    'user2': {'password': 'pass2'}
+}
 
 # Sign in page
 def sign_in():
@@ -18,9 +21,10 @@ def sign_in():
     username = st.text_input("Username")
     password = st.text_input("Password", type='password')
     if st.button("Sign In"):
-        if username == user_data['username'] and password == user_data['password']:
+        if username in users and users[username]['password'] == password:
             st.success("Signed in successfully!")
             st.session_state['logged_in'] = True
+            st.session_state['username'] = username
         else:
             st.error("Invalid username or password")
 
@@ -82,7 +86,7 @@ def main():
     if not st.session_state['logged_in']:
         sign_in()
     else:
-        st.sidebar.title("Menu")
+        st.sidebar.title(f"Welcome, {st.session_state['username']}")
         menu = ["Products", "Logout"]
         choice = st.sidebar.selectbox("Choose Option", menu)
 
